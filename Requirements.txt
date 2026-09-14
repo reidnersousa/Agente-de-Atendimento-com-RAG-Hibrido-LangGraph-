@@ -1,0 +1,12 @@
+langgraph
+langchain-core
+langchain-huggingface
+accelerate
+transformers
+torch
+kagglehub
+pymupdf
+chromadb
+rank_bm25
+sentence-transformers
+pydantic
