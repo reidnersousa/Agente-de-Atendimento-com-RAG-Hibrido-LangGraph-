@@ -2,7 +2,7 @@
 
 Agente de atendimento ao cliente que classifica tickets, responde dúvidas sobre políticas internas usando RAG híbrido (busca vetorial + BM25 + reranking), executa ações via tool calling, e mantém memória de conversa — construído com LangGraph e um LLM local (Qwen3 1.7B).
 
-> 🔗 **Rodado no Kaggle:** [link do notebook] *(cole aqui o link do seu notebook público)*
+> 🔗 **Rodado no Kaggle:** [Agente de Atendimento com RAG Híbrido (LangGraph)](https://www.kaggle.com/code/reidnersantos/agente-de-atendimento-com-rag-h-brido-langgraph)
 
 ---
 
