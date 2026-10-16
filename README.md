@@ -1,6 +1,6 @@
 # Agente de Atendimento com RAG Híbrido (LangGraph)
 
-Agente de atendimento ao cliente que classifica tickets, responde dúvidas sobre políticas internas usando RAG híbrido (busca vetorial + BM25 + reranking), executa ações via tool calling, e mantém memória de conversa — construído com LangGraph e um LLM local (Qwen3 1.7B).
+Agente de atendimento ao cliente que classifica tickets, responde dúvidas sobre políticas internas usando RAG híbrido (busca vetorial + BM25 + reranking), executa ações via tool calling, e mantém memória de conversa construído com LangGraph e um LLM local (Qwen3 1.7B).
 
 > 🔗 **Rodado no Kaggle:** [Agente de Atendimento com RAG Híbrido (LangGraph)](https://www.kaggle.com/code/reidnersantos/agente-de-atendimento-com-rag-h-brido-langgraph)
 
@@ -12,7 +12,7 @@ Agente de atendimento ao cliente que classifica tickets, responde dúvidas sobre
 - **RAG híbrido** sobre documentos PDF reais: busca vetorial (ChromaDB) + busca por palavra-chave (BM25) + fusão por Reciprocal Rank Fusion (RRF) + reranking com CrossEncoder
 - Sistema de **confiança em 3 níveis** (alto/médio/baixo) com fallback anti-alucinação
 - **Tool calling** no padrão ReAct (Thought → Action → Observation), com parsing de JSON robusto e guardrails contra o modelo pular etapas
-- Uso de um **LLM local** (Qwen3, via KaggleHub) em vez de API paga — decisão documentada abaixo
+- Uso de um **LLM local** (Qwen3, via KaggleHub) em vez de API paga, decidir fazer para testa o modelo sem se precoupa com custos  de chamadas de api, e entende mais sobre como as coisas funciona por baixo dos panos e como estrutura o langgraph
 
 ---
 
@@ -76,7 +76,7 @@ src/
 
 **LLM local em vez de API.** Optou-se por rodar Qwen3 1.7B localmente via KaggleHub em vez de usar Gemini/OpenAI. Isso elimina custo de API e dependência de internet para inferência, ao custo de respostas mais lentas e menos consistentes em formatação JSON — mitigado com parsing tolerante a erros (`extrair_primeiro_json`) e guardrails no loop do agente.
 
-**RAG generativo em vez de matcher de FAQ.** A primeira abordagem cogitada foi um matcher de perguntas pré-escritas. Foi descartada em favor de RAG generativo real sobre os PDFs de política, para manter compatibilidade com avaliação de *faithfulness* (o quanto a resposta é fundamentada no contexto recuperado) — métrica central em frameworks como RAGAS.
+**RAG generativo em vez de matcher de FAQ.** A primeira abordagem cogitada foi um matcher de perguntas pré-escritas. Foi descartada em favor de RAG generativo real sobre os PDFs de política, para manter compatibilidade com avaliação de *faithfulness* (o quanto a resposta é fundamentada no contexto recuperado)  métrica central em frameworks como RAGAS.
 
 **ChromaDB embutido em vez de solução cloud.** Roda inteiramente dentro do ambiente Kaggle, sem API key nem dependência de serviço externo, mantendo o índice vetorial persistido em disco.
 
@@ -104,7 +104,7 @@ Perguntas totalmente fora do escopo dos documentos indexados (ex: *"Converter 10
 
 **Mitigação não implementada ainda:** reforçar o prompt do nível "médio"/"baixo" para proibir explicitamente sugestões fora do contexto recuperado, em vez de apenas "avisar" sobre possível insuficiência de informação.
 
-> Esse é exatamente o tipo de falha que métricas de **faithfulness** (RAGAS/DeepEval) são desenhadas para capturar formalmente — motivo pelo qual avaliação estruturada é o próximo passo natural deste projeto.
+> Esse é exatamente o tipo de falha que métricas de **faithfulness** (RAGAS/DeepEval) são desenhadas para capturar formalmente  motivo pelo qual avaliação estruturada é o próximo passo natural deste projeto.
 
 ---
 
