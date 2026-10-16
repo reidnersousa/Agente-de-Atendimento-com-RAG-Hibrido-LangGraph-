@@ -8,11 +8,11 @@ Agente de atendimento ao cliente que classifica tickets, responde dúvidas sobre
 
 ## O que este projeto demonstra
 
-- Orquestração de agentes com **LangGraph** (`StateGraph`, roteamento condicional, memória por `thread_id`)
-- **RAG híbrido** sobre documentos PDF reais: busca vetorial (ChromaDB) + busca por palavra-chave (BM25) + fusão por Reciprocal Rank Fusion (RRF) + reranking com CrossEncoder
-- Sistema de **confiança em 3 níveis** (alto/médio/baixo) com fallback anti-alucinação
-- **Tool calling** no padrão ReAct (Thought → Action → Observation), com parsing de JSON robusto e guardrails contra o modelo pular etapas
-- Uso de um **LLM local** (Qwen3, via KaggleHub) em vez de API paga, decidir fazer para testa o modelo sem se precoupa com custos  de chamadas de api, e entende mais sobre como as coisas funciona por baixo dos panos e como estrutura o langgraph
+- Orquestração de agentes com **LangGraph** (`StateGraph`, roteamento condicional, memória por `thread_id`).
+- **RAG híbrido** sobre documentos PDF reais: busca vetorial (ChromaDB) + busca por palavra-chave (BM25) + fusão por Reciprocal Rank Fusion (RRF) + reranking com CrossEncoder.
+- Sistema de **confiança em 3 níveis** (alto/médio/baixo) com fallback anti-alucinação.
+- **Tool calling** no padrão ReAct (Thought → Action → Observation), com parsing de JSON robusto e guardrails contra o modelo pular etapas.
+- Uso de um **LLM local** (Qwen3, via KaggleHub) em vez de API paga, decidir fazer para testa o modelo sem se precoupa com custos  de chamadas de api, e entende mais sobre como as coisas funciona por baixo dos panos e como estrutura o langgraph.
 
 ---
 
@@ -74,7 +74,7 @@ src/
 
 ## Decisões de design
 
-**LLM local em vez de API.** Optou-se por rodar Qwen3 1.7B localmente via KaggleHub em vez de usar Gemini/OpenAI. Isso elimina custo de API e dependência de internet para inferência, ao custo de respostas mais lentas e menos consistentes em formatação JSON — mitigado com parsing tolerante a erros (`extrair_primeiro_json`) e guardrails no loop do agente.
+**LLM local em vez de API.** Optou-se por rodar Qwen3 1.7B localmente via KaggleHub em vez de usar Gemini/OpenAI. Isso elimina custo de API e dependência de internet para inferência, ao custo de respostas mais lentas e menos consistentes em formatação JSON mitigado com parsing tolerante a erros (`extrair_primeiro_json`) e guardrails no loop do agente.
 
 **RAG generativo em vez de matcher de FAQ.** A primeira abordagem cogitada foi um matcher de perguntas pré-escritas. Foi descartada em favor de RAG generativo real sobre os PDFs de política, para manter compatibilidade com avaliação de *faithfulness* (o quanto a resposta é fundamentada no contexto recuperado)  métrica central em frameworks como RAGAS.
 
@@ -100,7 +100,7 @@ Perguntas totalmente fora do escopo dos documentos indexados (ex: *"Converter 10
 
 **Causa raiz:** o retrieval (BM25 + embeddings) encontra similaridade lexical (palavras em comum), não necessariamente relevância semântica de domínio.
 
-**Testado:** variação do threshold `min_score` entre 0.25 e 0.35 — o caso problemático (confiança 0.28) permanece "médio" na maior parte dessa faixa, mostrando que ajustar apenas o threshold não é uma solução robusta isolada.
+**Testado:** variação do threshold `min_score` entre 0.25 e 0.35  o caso problemático (confiança 0.28) permanece "médio" na maior parte dessa faixa, mostrando que ajustar apenas o threshold não é uma solução robusta isolada.
 
 **Mitigação não implementada ainda:** reforçar o prompt do nível "médio"/"baixo" para proibir explicitamente sugestões fora do contexto recuperado, em vez de apenas "avisar" sobre possível insuficiência de informação.
 
@@ -110,7 +110,7 @@ Perguntas totalmente fora do escopo dos documentos indexados (ex: *"Converter 10
 
 ## Limitações conhecidas
 
-- Classificador de tickets cobre apenas 3 categorias (`bug`, `duvida`, `elogio`) — perguntas que não se encaixam em nenhuma (ex: pedidos de ação/cálculo) são forçadas para a categoria mais próxima, podendo rotear incorretamente.
+- Classificador de tickets cobre apenas 3 categorias (`bug`, `duvida`, `elogio`)  perguntas que não se encaixam em nenhuma (ex: pedidos de ação/cálculo) são forçadas para a categoria mais próxima, podendo rotear incorretamente.
 - Ver "Achados técnicos" acima para a limitação de calibração em perguntas fora do domínio.
 - Memória de conversa (`MemorySaver`) é apenas em RAM — não persiste entre reinícios do kernel/processo.
 
